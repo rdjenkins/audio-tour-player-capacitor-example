@@ -13,4 +13,4 @@ npm install
 npm run dev
 ```
 
-Note - not quite ready yet ... just adding in capacitor (work in progress)
+Note - not quite ready yet ... needs testing on native platforms (work in progress)
