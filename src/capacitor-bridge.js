@@ -1,11 +1,12 @@
 /**
  * Capacitor Bridge for audio-tour-player
  * 
- * This module provides a storage delegate and URL rewriter that work seamlessly across both web and native platforms using Capacitor.
+ * This module provides a storage delegate and URL rewriter so that audio-tour-player 
+ * works within capacitor apps.
  * 
  * Key Features:
  * - Uses MD5 hashing to create unique filenames for cached audio files on native platforms.
- * - Leverages the Cache API for web caching.
+ * - Uses the Cache API for web caching.
  * - Provides a unified interface for checking cache status, preloading assets, and clearing cache.
  * - Rewrites URLs to point to local cached versions when available, falling back to remote URLs when not.
  * 
@@ -34,7 +35,7 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
 /**
  * Downloads a file and saves it using the MD5 of its URL as the filename.
  */
-async function downloadAndStore(url) {
+async function downloadAndStore(url, cacheName = CACHE_NAME) {
     if (isNative) {
         // Native: Save to Filesystem using MD5
         try {
@@ -51,7 +52,7 @@ async function downloadAndStore(url) {
     } else {
         // Web: Save to Cache API
         if ('caches' in window) {
-            const cache = await caches.open(CACHE_NAME);
+            const cache = await caches.open(cacheName);
             await cache.add(url); // This fetches and stores automatically
             return true;
         }
@@ -82,10 +83,10 @@ export const capacitorStorageDelegate = {
         };
     },
 
-    preload: async (urls, cacheName, onProgress) => {
+    preload: async (urls, cacheName, onProgress) => { // uses cacheName to align with the web example
         let completed = 0;
         for (const url of urls) {
-            await downloadAndStore(url);
+            await downloadAndStore(url, cacheName);
             completed++;
             onProgress(Math.round((completed / urls.length) * 100));
         }
