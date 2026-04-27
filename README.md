@@ -6,6 +6,8 @@ Uses [![npm version](https://img.shields.io/npm/v/audio-tour-player)](https://ww
 
 ## How to run
 
+### Browser Dev
+
 ```
 gh repo clone rdjenkins/audio-tour-player-capacitor-example
 cd audio-tour-player-capacitor-example
@@ -13,12 +15,32 @@ npm install
 npm run dev
 ```
 
+... then 
+
+### Android
+
+```
+npm run build
+npx cap sync
+npx cap open android
+```
+
+### iOS
+
+```
+npm run build
+npx cap sync
+npx cap open ios
+```
+
 ## testing ...
 
 This is not quite ready yet!
 
-* tested on browser
-* needs testing on native platforms (work in progress)
+* works in a browser ✅
+* works in Android simulator ✅
+* works on Android device ✅
+* needs testing on iOS (work in progress)
 
 ## The module capacitor-bridge.js
 
