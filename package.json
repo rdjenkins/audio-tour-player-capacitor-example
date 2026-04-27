@@ -17,6 +17,6 @@
     "@capacitor/core": "^8.3.1",
     "@capacitor/filesystem": "^8.1.2",
     "@capacitor/ios": "^8.3.1",
-    "audio-tour-player": "^1.0.14"
+    "audio-tour-player": "^1.0.15"
   }
 }

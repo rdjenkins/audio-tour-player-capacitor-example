@@ -1,4 +1,4 @@
-import 'audio-tour-player';
+import 'audio-tour-player'
 import { capacitorStorageDelegate, capacitorUrlRewriter } from './capacitor-bridge.js';
 
 

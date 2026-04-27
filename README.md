@@ -1,8 +1,8 @@
 # Example
 
-An example using the [audio-tour-player package](https://www.npmjs.com/package/audio-tour-player).
+An example for capacitor using the [audio-tour-player package](https://www.npmjs.com/package/audio-tour-player).
 
-[![npm version](https://img.shields.io/npm/v/audio-tour-player)](https://www.npmjs.com/package/audio-tour-player)
+Uses [![npm version](https://img.shields.io/npm/v/audio-tour-player)](https://www.npmjs.com/package/audio-tour-player)
 
 ## How to run
 
@@ -13,11 +13,17 @@ npm install
 npm run dev
 ```
 
-Note - not quite ready yet ... needs testing on native platforms (work in progress)
+## testing ...
 
-The module capacitor-bridge.js
+This is not quite ready yet!
 
-* Uses MD5 hashing to create unique filenames for cached audio files on native platforms.
+* tested on browser
+* needs testing on native platforms (work in progress)
+
+## The module capacitor-bridge.js
+
+* Means that full capacitor logic doesn't need to be maintained inside audio-tour-player meaning it can stay small for the web.
+* Uses MD5 hashing to create unique filenames for cached files on native platforms.
+* Assumes 'everything is a blob' ... and why not?
 * Uses the Cache API for web caching.
-* Provides a unified interface for checking cache status, preloading assets, and clearing cache.
-* Rewrites URLs to point to local cached versions when available, falling back to remote URLs when not.
+* Uses @capacitor/filesystem for native file storage.
