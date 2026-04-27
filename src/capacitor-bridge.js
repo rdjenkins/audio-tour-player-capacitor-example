@@ -150,6 +150,7 @@ export const capacitorStorageDelegate = {
  * If yes, return the local capacitor:// URL.
  * If no, return the original URL.
  */
+/*
 export async function getInternalPath(url) {
     const filename = MD5(url);
     try {
@@ -166,6 +167,7 @@ export async function getInternalPath(url) {
         return url; // Fallback to remote
     }
 }
+*/
 
 /**
  * Replaces audio-tour-player's urlRewriter(url)

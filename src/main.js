@@ -1,5 +1,5 @@
 import 'audio-tour-player'
-import { capacitorStorageDelegate, capacitorUrlRewriter } from './capacitor-bridge.js';
+import { capacitorStorageDelegate, capacitorUrlRewriter} from './capacitor-bridge.js';
 
 
 // Wait for the DOM to be ready and initiate the player
@@ -13,4 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inject the Capacitor logic
   player.storage = capacitorStorageDelegate;
   player.urlRewriter = capacitorUrlRewriter;
+  // audio-tour-player also checks for a customLoader to manage capacitor logic
+  player.customLoader = capacitorUrlRewriter;
 });
