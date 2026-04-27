@@ -1,6 +1,6 @@
 # Example
 
-An example for capacitor using the [audio-tour-player package](https://www.npmjs.com/package/audio-tour-player).
+An example for capacitor using the [audio-tour-player](https://www.npmjs.com/package/audio-tour-player) package.
 
 Uses [![npm version](https://img.shields.io/npm/v/audio-tour-player)](https://www.npmjs.com/package/audio-tour-player)
 
