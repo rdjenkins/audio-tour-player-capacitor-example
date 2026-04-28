@@ -33,6 +33,7 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
 });
 
 var list_of_urls = []; // store of URLs for this tour
+// TODO this list gets lost if App is closed
 
 // --- CORE LOGIC ---
 
@@ -146,34 +147,11 @@ export const capacitorStorageDelegate = {
 };
 
 /**
- * The Rewriter: Check if MD5(url) exists. 
- * If yes, return the local capacitor:// URL.
- * If no, return the original URL.
- */
-/*
-export async function getInternalPath(url) {
-    const filename = MD5(url);
-    try {
-        const uriResult = await Filesystem.getUri({
-            path: filename,
-            directory: Directory.Data
-        });
-        
-        // Final existence check
-        await Filesystem.stat({ path: filename, directory: Directory.Data });
-
-        return Capacitor.convertFileSrc(uriResult.uri);
-    } catch (error) {
-        return url; // Fallback to remote
-    }
-}
-*/
-
-/**
  * Replaces audio-tour-player's urlRewriter(url)
  */
 export async function capacitorUrlRewriter(url) {
     console.log(`Rewriting URL: ${url}`)
+    // TODO explore how to get this to recall the tour json when offline
     if (isNative) {
         const filename = MD5(url);
         try {
