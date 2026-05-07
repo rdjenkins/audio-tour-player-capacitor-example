@@ -18,7 +18,12 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 
 // audio-tour-player does this but we can't easily access it so we'll just check it again.
 // CACHE_NAME  is used in capacitorUrlRewriter()
-const CACHE_NAME = document.querySelector('audio-tour-player').getAttribute('cache-name') || 'audio-tour-cache-v1';
+var CACHE_NAME = 'audio-tour-cache-v1';
+try {
+    CACHE_NAME = document.querySelector('audio-tour-player').getAttribute('cache-name');
+} catch(e) {
+    console.log('no cache-name attribute set sticking with default')
+}
 const isNative = Capacitor.isNativePlatform();
 console.log(`Capacitor Bridge initialized. Running on ${isNative ? 'Native' : 'Web'} platform.`);
 // --- UTILITIES ---
