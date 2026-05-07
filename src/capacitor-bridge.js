@@ -16,7 +16,7 @@
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 
-// audio-tour-player does this by we can't easily access it so we'll just check it again.
+// audio-tour-player does this but we can't easily access it so we'll just check it again.
 // CACHE_NAME  is used in capacitorUrlRewriter()
 const CACHE_NAME = document.querySelector('audio-tour-player').getAttribute('cache-name') || 'audio-tour-cache-v1';
 const isNative = Capacitor.isNativePlatform();
@@ -32,8 +32,6 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
     reader.readAsDataURL(blob);
 });
 
-var list_of_urls = []; // store of URLs for this tour
-// TODO this list gets lost if App is closed
 
 // --- CORE LOGIC ---
 
@@ -42,7 +40,6 @@ var list_of_urls = []; // store of URLs for this tour
  */
 async function downloadAndStore(url, cacheName) {
     console.log(`Downloading and storing: ${url}`);
-    list_of_urls.push(url); // Add URL to the list
     if (isNative) {
         // Native: Save to Filesystem using MD5
         try {
@@ -134,13 +131,15 @@ export const capacitorStorageDelegate = {
         }
     },
 
-    // audio-tour-player calls this clear() function with the cacheName
-    clear: async (cacheName) => {
-        if (isNative) { // we stored the list of urls so we can delete them here as we don't use the cache API for native 
-            for (const url of list_of_urls) {
+    // audio-tour-player 1.0.17+ calls this clear() function with the cacheName and urls
+    clear: async (cacheName, urls) => {
+        if (isNative) { // Filesystem is available so delete the individual URLs
+            console.log(`Clearing URLs: ${urls.length}`);
+            for (const url of urls) {
                 try { await Filesystem.deleteFile({ path: MD5(url), directory: Directory.Data }); } catch (e) {}
             }
         } else {
+            console.log(`Clearing cache: ${cacheName}`);
             await caches.delete(cacheName);
         }
     }
