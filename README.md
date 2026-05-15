@@ -17,35 +17,27 @@ npm run dev
 
 ... then 
 
-### Android
+### Native devices
 
 ```
 npm run build
 npx cap sync
-npx cap open android
 ```
 
-### iOS
+... and open in your IDE for Android or iOS
 
-```
-npm run build
-npx cap sync
-npx cap open ios
-```
 
 ## testing ...
 
-This is not quite ready yet!
-
 * works in a browser ✅
-* works in Android simulator ✅
-* works on Android device ✅
-* needs testing on iOS (work in progress)
+* works native on Android device ✅
+* works native on iOS device ✅
 
 ## The module capacitor-bridge.js
 
 * Means that full capacitor logic doesn't need to be maintained inside audio-tour-player meaning it can stay small for the web.
 * Uses MD5 hashing to create unique filenames for cached files on native platforms.
+* Includes filename extension for audio files for native iOS
 * Assumes 'everything is a blob' ... and why not?
 * Uses the Cache API for web caching.
 * Uses @capacitor/filesystem for native file storage.

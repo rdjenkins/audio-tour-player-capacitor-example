@@ -37,6 +37,18 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
     reader.readAsDataURL(blob);
 });
 
+/**
+ * Simple check of the last 4 characters of the url string to see if there's an obvious audio
+ * file extension. This is needed for iOS for audio files within capacitor (as it's fussy)
+ * @param {*} url 
+ * @returns '.ext' or ''
+ */
+function getFileExtension(url) {
+    const last4 = url.slice(-4);
+    const audioExtensions = ['.mp3', '.ogg', '.wav'];
+    const ext = last4.includes('.') ? last4.substring(last4.indexOf('.')) : '';
+    return audioExtensions.includes(ext.toLowerCase()) ? ext : '';
+}
 
 // --- CORE LOGIC ---
 
@@ -46,13 +58,15 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
 async function downloadAndStore(url, cacheName) {
     console.log(`Downloading and storing: ${url}`);
     if (isNative) {
-        // Native: Save to Filesystem using MD5
+        if (url === 'sw.js') { return false}
+        // Native: Save to Filesystem using MD5 with extension for audio files (iOS is picky about this)
         try {
             const response = await fetch(url);
             const blob = await response.blob();
             const base64Data = await blobToBase64(blob);
+            const filename = MD5(url) + getFileExtension(url);
             await Filesystem.writeFile({
-                path: MD5(url),
+                path: filename,
                 data: base64Data,
                 directory: Directory.Data
             });
@@ -80,9 +94,10 @@ export const capacitorStorageDelegate = {
     getStatus: async (urls, cacheName) => {
         let found = 0;
         if (isNative) {
+            urls = urls.filter(url => url !== 'sw.js'); // forget about the service worker!
             for (const url of urls) {
                 try {
-                    await Filesystem.stat({ path: MD5(url), directory: Directory.Data });
+                    await Filesystem.stat({ path: MD5(url) + getFileExtension(url), directory: Directory.Data });
                     found++;
                 } catch (e) {}
             }
@@ -95,12 +110,16 @@ export const capacitorStorageDelegate = {
         }
         return { 
             percent: Math.round((found / urls.length) * 100), 
-            isComplete: found === urls.length 
+            isComplete: found === urls.length ,
+            found: found - 1 // double fudged
         };
     },
 
     preload: async (urls, cacheName, onProgress) => { // uses cacheName to align with the web example
         let completed = 0;
+        if (isNative) {
+            urls = urls.filter(url => url !== 'sw.js'); // forget about the service worker!
+        }
         for (const url of urls) {
             await downloadAndStore(url, cacheName);
             completed++;
@@ -117,9 +136,10 @@ export const capacitorStorageDelegate = {
                 const blob = await clonedResponse.blob();
                 const base64Data = await blobToBase64(blob);
                 
-                // store to native filesystem
+                // store to native filesystem with extension
+                const filename = MD5(url) + getFileExtension(url);
                 await Filesystem.writeFile({
-                    path: MD5(url),
+                    path: filename,
                     data: base64Data,
                     directory: Directory.Data
                 });
@@ -141,7 +161,7 @@ export const capacitorStorageDelegate = {
         if (isNative) { // Filesystem is available so delete the individual URLs
             console.log(`Clearing URLs: ${urls.length}`);
             for (const url of urls) {
-                try { await Filesystem.deleteFile({ path: MD5(url), directory: Directory.Data }); } catch (e) {}
+                try { await Filesystem.deleteFile({ path: MD5(url) + getFileExtension(url), directory: Directory.Data }); } catch (e) {}
             }
         } else {
             console.log(`Clearing cache: ${cacheName}`);
@@ -157,7 +177,7 @@ export async function capacitorUrlRewriter(url) {
     console.log(`Rewriting URL: ${url}`)
     // TODO explore how to get this to recall the tour json when offline
     if (isNative) {
-        const filename = MD5(url);
+        const filename = MD5(url) + getFileExtension(url);
         try {
             const uriResult = await Filesystem.getUri({
                 path: filename,
