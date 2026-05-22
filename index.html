@@ -5,12 +5,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>audio-tour-player-capacitor-example</title>
+  <style>
+    body {
+	    margin: 0;
+	    padding: 0;
+    }
+  </style>
 </head>
 
 <body>
   <audio-tour-player 
       src="https://celticquietplaces.com/server/tourguide.php?id=1"
       offline-capable="true"
+      environment="capacitor"
       cache-name="cqp1"
       >
   </audio-tour-player>

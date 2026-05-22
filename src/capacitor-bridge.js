@@ -185,8 +185,12 @@ export async function capacitorUrlRewriter(url) {
             });
             // Verify it exists before converting
             await Filesystem.stat({ path: filename, directory: Directory.Data });
+            console.log(`Rewrote URL for native platform: ${url} -> ${uriResult.uri}`);
             return Capacitor.convertFileSrc(uriResult.uri);
-        } catch (e) { return url; }
+        } catch (e) { 
+            console.log(`File not found in native storage, returning original URL: ${url}`);
+            return url;
+        }
     } else {
         // Web: Check Cache API
         if ('caches' in window) {
@@ -201,4 +205,36 @@ export async function capacitorUrlRewriter(url) {
         }
         return url;
     }
+}
+
+export async function capacitorJsonLoader(path) {
+    if (isNative) {
+        console.log(`Loading JSON with Capacitor loader: ${path}`);
+        const filename = MD5(path) + getFileExtension(path);
+        console.log(`Looking for file: ${filename}`);
+        try {
+            const uriResult = await Filesystem.getUri({
+                path: filename,
+                directory: Directory.Data
+            });
+            console.log(`Found file in native storage: ${uriResult.uri}`);
+            // Read the file as text directly from the filesystem
+            const file = await Filesystem.readFile({
+                path: filename,
+                directory: Directory.Data,
+                //encoding: Encoding.UTF8
+            });
+            const jsonString = atob(file.data);
+            console.log(`Successfully read file from native storage: ${file}`);
+            // Return the parsed JSON directly
+            return JSON.parse(jsonString);
+        } catch (e) {
+            console.log("JSON not in native storage, fetching online...", e);
+            const response = await fetch(path);
+            return await response.json();
+        }
+    }
+    // Fallback for Web/Browser
+    const response = await fetch(path);
+    return await response.json();
 }
