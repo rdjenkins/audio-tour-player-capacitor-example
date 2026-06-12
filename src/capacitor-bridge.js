@@ -171,11 +171,10 @@ export const capacitorStorageDelegate = {
 };
 
 /**
- * Replaces audio-tour-player's urlRewriter(url)
+ * Replaces audio-tour-player's urlRewriter(url) for media URLs
  */
 export async function capacitorUrlRewriter(url) {
     console.log(`Rewriting URL: ${url}`)
-    // TODO explore how to get this to recall the tour json when offline
     if (isNative) {
         const filename = MD5(url) + getFileExtension(url);
         try {
