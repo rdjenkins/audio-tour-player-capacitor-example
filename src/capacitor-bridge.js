@@ -45,7 +45,7 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
  */
 function getFileExtension(url) {
     const last4 = url.slice(-4);
-    const audioExtensions = ['.mp3', '.ogg', '.wav'];
+    const audioExtensions = ['.mp3', '.ogg', '.wav', '.m4a'];
     const ext = last4.includes('.') ? last4.substring(last4.indexOf('.')) : '';
     return audioExtensions.includes(ext.toLowerCase()) ? ext : '';
 }
